@@ -530,7 +530,7 @@ def generate_spaceship(random_seed='',
 
     # Extrude out the hull along the X axis, adding some semi-random perturbations
     for face in bm.faces[:]:
-        if abs(face.normal.x) > 0.5:
+        if abs(face.normal.x) > 0.5 or abs(face.normal.y) > 0.5:
             hull_segment_length = uniform(0.3, 1)
             num_hull_segments = randrange(num_hull_segments_min, num_hull_segments_max)
             hull_segment_range = range(num_hull_segments)
