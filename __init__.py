@@ -42,8 +42,8 @@ class GenerateSpaceship(Operator):
     def execute(self, context):
         spaceship_generator.generate_spaceship(
             self.random_seed,
-            self.num_asymmetry_segments_min,
-            self.num_asymmetry_segments_max,
+            self.num_hull_segments_min,
+            self.num_hull_segments_max,
             self.create_asymmetry_segments,
             self.num_asymmetry_segments_min,
             self.num_asymmetry_segments_max,
