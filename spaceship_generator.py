@@ -508,6 +508,9 @@ def create_materials():
 # Takes an optional random seed value to generate a specific spaceship.
 # Allows overriding of some parameters that affect generation.
 def generate_spaceship(random_seed='',
+                       x_segments = True,
+                       y_segments = False,
+                       z_segments = False,
                        num_hull_segments_min=3,
                        num_hull_segments_max=6,
                        create_asymmetry_segments=True,
@@ -530,7 +533,9 @@ def generate_spaceship(random_seed='',
 
     # Extrude out the hull along the X axis, adding some semi-random perturbations
     for face in bm.faces[:]:
-        if abs(face.normal.x) > 0.5 or abs(face.normal.y) > 0.5 or abs(face.normal.z) > 0.5:
+        if (x_segments and abs(face.normal.x) > 0.5) or 
+            (y_segments and abs(face.normal.y) > 0.5) or 
+            (z_segments and abs(face.normal.z) > 0.5):
             hull_segment_length = uniform(0.3, 1)
             num_hull_segments = randrange(num_hull_segments_min, num_hull_segments_max)
             hull_segment_range = range(num_hull_segments)

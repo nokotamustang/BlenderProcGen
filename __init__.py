@@ -28,6 +28,9 @@ class GenerateSpaceship(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     random_seed = StringProperty(default='', name='Seed')
+    x_segments  = BoolProperty(default=True, name='Create X Segments')
+    y_segments  = BoolProperty(default=False, name='Create Y Segments')
+    z_segments  = BoolProperty(default=False, name='Create Z Segments')
     num_hull_segments_min      = IntProperty (default=3, min=0, soft_max=16, name='Min. Hull Segments')
     num_hull_segments_max      = IntProperty (default=6, min=0, soft_max=16, name='Max. Hull Segments')
     create_asymmetry_segments  = BoolProperty(default=True, name='Create Asymmetry Segments')
@@ -42,6 +45,9 @@ class GenerateSpaceship(Operator):
     def execute(self, context):
         spaceship_generator.generate_spaceship(
             self.random_seed,
+            self.x_segments,
+            self.y_segments,
+            self.z_segments,
             self.num_hull_segments_min,
             self.num_hull_segments_max,
             self.create_asymmetry_segments,
