@@ -507,7 +507,7 @@ def create_materials():
 # Just uses global cube texture coordinates rather than generating UVs.
 # Takes an optional random seed value to generate a specific spaceship.
 # Allows overriding of some parameters that affect generation.
-def generate_spaceship(random_seed='',
+def generate_spaceship(random_seed=0,
                        x_segments = True,
                        y_segments = False,
                        z_segments = False,
@@ -530,17 +530,25 @@ def generate_spaceship(random_seed='',
     scale_vector = Vector(
         (uniform(0.75, 2.0), uniform(0.75, 2.0), uniform(0.75, 2.0)))
     bmesh.ops.scale(bm, vec=scale_vector, verts=bm.verts)
-
+    
     # Extrude out the hull along the X axis, adding some semi-random perturbations
     for face in bm.faces[:]:
-        if (x_segments and abs(face.normal.x) > 0.5) or 
-            (y_segments and abs(face.normal.y) > 0.5) or 
-            (z_segments and abs(face.normal.z) > 0.5):
+        isX = x_segments and abs(face.normal.x) > 0.5
+        isY = y_segments and abs(face.normal.y) > 0.5
+        isZ = z_segments and abs(face.normal.z) > 0.5
+        if isX or isY or isZ:
             hull_segment_length = uniform(0.3, 1)
             num_hull_segments = randrange(num_hull_segments_min, num_hull_segments_max)
             hull_segment_range = range(num_hull_segments)
             for i in hull_segment_range:
+                #if i > 2:
+                #   break
+                if (isY or isZ) and i > 5:
+                    break
                 is_last_hull_segment = i == hull_segment_range[-1]
+                if (isY or isZ) and i == 5:
+                    is_last_hull_segment = True
+                    
                 val = random()
                 if val > 0.1:
                     # Most of the time, extrude out the face with some random deviations
@@ -551,9 +559,11 @@ def generate_spaceship(random_seed='',
 
                     # Maybe apply some scaling
                     if random() > 0.5:
+                        #sx = uniform(1.2, 1.5)
                         sy = uniform(1.2, 1.5)
                         sz = uniform(1.2, 1.5)
                         if is_last_hull_segment or random() > 0.5:
+                            #sx = 1 / sx
                             sy = 1 / sy
                             sz = 1 / sz
                         scale_face(bm, face, 1, sy, sz)
@@ -569,7 +579,7 @@ def generate_spaceship(random_seed='',
                                             verts=face.verts)
 
                     # Maybe add some rotation around Y axis
-                    if random() > 0.5:
+                    if x_segments and random() > 0.5:
                         angle = 5
                         if random() > 0.5:
                             angle = -angle

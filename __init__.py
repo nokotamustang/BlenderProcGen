@@ -25,9 +25,9 @@ class GenerateSpaceship(Operator):
     """Procedurally generate 3D spaceships from a random seed."""
     bl_idname = "mesh.generate_spaceship"
     bl_label = "Spaceship"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
-    random_seed = StringProperty(default='', name='Seed')
+    random_seed = IntProperty (default=0, min=0, soft_max=16, name='Seed')
     x_segments  = BoolProperty(default=True, name='Create X Segments')
     y_segments  = BoolProperty(default=False, name='Create Y Segments')
     z_segments  = BoolProperty(default=False, name='Create Z Segments')
