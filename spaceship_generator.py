@@ -507,7 +507,7 @@ def create_materials():
 # Just uses global cube texture coordinates rather than generating UVs.
 # Takes an optional random seed value to generate a specific spaceship.
 # Allows overriding of some parameters that affect generation.
-def generate_spaceship(random_seed=0,
+def generate_spaceship(random_seed=1,
                        x_segments = True,
                        y_segments = False,
                        z_segments = False,
@@ -732,10 +732,10 @@ def generate_spaceship(random_seed=0,
             me.materials.append(mat)
         else:
             me.materials.append(bpy.data.materials.new(name="Material"))
-    
+    print(len(scene.objects))
     return obj
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     
     # When true, this script will generate a single spaceship in the scene.
     # When false, this script will render multiple movie frames showcasing lots of ships.
@@ -821,3 +821,4 @@ if __name__ == "__main__":
             print('Rendering frame ' + str(frame) + '...')
             bpy.ops.render.render(write_still=True)
             frame += 1
+'''

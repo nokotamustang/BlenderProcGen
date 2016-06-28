@@ -21,6 +21,8 @@ import bpy
 from bpy.props import StringProperty, BoolProperty, IntProperty
 from bpy.types import Operator
 
+StartCreation = False
+
 class GenerateSpaceship(Operator):
     """Procedurally generate 3D spaceships from a random seed."""
     bl_idname = "mesh.generate_spaceship"
@@ -42,22 +44,79 @@ class GenerateSpaceship(Operator):
     apply_bevel_modifier       = BoolProperty(default=True,  name='Apply Bevel Modifier')
     assign_materials           = BoolProperty(default=True,  name='Assign Materials')
 
+    CreatedObject = None
+    count = 0
+    
+    class OBJECT_OT_CreateSpaceShipButton(bpy.types.Operator):
+        bl_idname = "spaceship.create"
+        bl_label = "Create SpaceShip"
+        
+        def execute(self, context):
+            global StartCreation
+            StartCreation = True
+            return{'FINISHED'}
+            
+    
+    def draw(self, context):
+        
+        layout = self.layout
+        box = layout.box()
+        box.prop(self, 'random_seed')
+        box.prop(self, 'x_segments')
+        box.prop(self, 'y_segments')
+        box.prop(self, 'z_segments')
+        box.prop(self, 'num_hull_segments_min')
+        box.prop(self, 'num_hull_segments_max')
+        box.prop(self, 'create_asymmetry_segments')
+        box.prop(self, 'num_asymmetry_segments_min')
+        box.prop(self, 'num_asymmetry_segments_max')
+        box.prop(self, 'create_face_detail')
+        box.prop(self, 'allow_horizontal_symmetry')
+        box.prop(self, 'allow_vertical_symmetry')
+        box.prop(self, 'apply_bevel_modifier')
+        box.prop(self, 'assign_materials')
+        box.operator("spaceship.create", text='Create SpaceShip')
+            
     def execute(self, context):
-        spaceship_generator.generate_spaceship(
-            self.random_seed,
-            self.x_segments,
-            self.y_segments,
-            self.z_segments,
-            self.num_hull_segments_min,
-            self.num_hull_segments_max,
-            self.create_asymmetry_segments,
-            self.num_asymmetry_segments_min,
-            self.num_asymmetry_segments_max,
-            self.create_face_detail,
-            self.allow_horizontal_symmetry,
-            self.allow_vertical_symmetry,
-            self.apply_bevel_modifier)
-        return {'FINISHED'}
+        global StartCreation
+        if StartCreation:
+            self.CreatedObject = spaceship_generator.generate_spaceship(
+                self.random_seed,
+                self.x_segments,
+                self.y_segments,
+                self.z_segments,
+                self.num_hull_segments_min,
+                self.num_hull_segments_max,
+                self.create_asymmetry_segments,
+                self.num_asymmetry_segments_min,
+                self.num_asymmetry_segments_max,
+                self.create_face_detail,
+                self.allow_horizontal_symmetry,
+                self.allow_vertical_symmetry,
+                self.apply_bevel_modifier)
+            
+            StartCreation = False
+            return {'FINISHED'}
+        
+        if self.count == 0:
+            self.CreatedObject = spaceship_generator.generate_spaceship(
+                self.random_seed,
+                self.x_segments,
+                self.y_segments,
+                self.z_segments,
+                self.num_hull_segments_min,
+                self.num_hull_segments_max,
+                self.create_asymmetry_segments,
+                self.num_asymmetry_segments_min,
+                self.num_asymmetry_segments_max,
+                self.create_face_detail,
+                self.allow_horizontal_symmetry,
+                self.allow_vertical_symmetry,
+                self.apply_bevel_modifier)
+            self.count += 1
+            return {'FINISHED'}
+        else:
+            return {'RUNNING_MODAL'}
 
 def menu_func(self, context):
     self.layout.operator(GenerateSpaceship.bl_idname, text="Spaceship")
