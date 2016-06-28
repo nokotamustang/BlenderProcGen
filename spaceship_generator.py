@@ -14,6 +14,7 @@ import os.path
 import bpy
 import bmesh
 import datetime
+import time
 from math import sqrt, radians, pi, cos, sin
 from mathutils import Vector, Matrix
 from random import random, seed, uniform, randint, randrange
@@ -524,6 +525,9 @@ def generate_spaceship(random_seed=1,
     if random_seed:
         seed(random_seed)
 
+    wm = bpy.context.window_manager
+    
+    wm.progress_begin(0, 100)
     # Let's start with a unit BMesh cube scaled randomly
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1)
@@ -531,6 +535,7 @@ def generate_spaceship(random_seed=1,
         (uniform(0.75, 2.0), uniform(0.75, 2.0), uniform(0.75, 2.0)))
     bmesh.ops.scale(bm, vec=scale_vector, verts=bm.verts)
     
+    wm.progress_update(5)
     # Extrude out the hull along the X axis, adding some semi-random perturbations
     for face in bm.faces[:]:
         isX = x_segments and abs(face.normal.x) > 0.5
@@ -593,6 +598,7 @@ def generate_spaceship(random_seed=1,
                     face = ribbed_extrude_face(
                         bm, face, hull_segment_length, randint(2, 4), rib_scale)
 
+    wm.progress_update(25)
     # Add some large asynmmetrical sections of the hull that stick out
     if create_asymmetry_segments:
         for face in bm.faces[:]:
@@ -608,7 +614,8 @@ def generate_spaceship(random_seed=1,
                     if random() > 0.25:
                         s = 1 / uniform(1.1, 1.5)
                         scale_face(bm, face, s, s, s)
-
+    
+    wm.progress_update(35)
     # Now the basic hull shape is built, let's categorize + add detail to all the faces
     if create_face_detail:
         engine_faces = []
@@ -666,36 +673,43 @@ def generate_spaceship(random_seed=1,
                 else:
                     face.material_index = Material.hull_lights
 
+        wm.progress_update(40)
         # Now we've categorized, let's actually add the detail
         for face in engine_faces:
             add_exhaust_to_face(bm, face)
-
+        wm.progress_update(42)
         for face in grid_faces:
             add_grid_to_face(bm, face)
-
+        wm.progress_update(47)
         for face in antenna_faces:
             add_surface_antenna_to_face(bm, face)
-
+        wm.progress_update(52)
         for face in weapon_faces:
             add_weapons_to_face(bm, face)
-
+        wm.progress_update(57)
         for face in sphere_faces:
             add_sphere_to_face(bm, face)
-
+        wm.progress_update(62)
         for face in disc_faces:
             add_disc_to_face(bm, face)
-
+        wm.progress_update(67)
         for face in cylinder_faces:
             add_cylinders_to_face(bm, face)
 
+    wm.progress_update(70)
+    
     # Apply horizontal symmetry sometimes
     if allow_horizontal_symmetry and random() > 0.5:
         bmesh.ops.symmetrize(bm, input=bm.verts[:] + bm.edges[:] + bm.faces[:], direction=1)
-
+    
+    wm.progress_update(75)
+        
     # Apply vertical symmetry sometimes - this can cause spaceship "islands", so disabled by default
     if allow_vertical_symmetry and random() > 0.5:
         bmesh.ops.symmetrize(bm, input=bm.verts[:] + bm.edges[:] + bm.faces[:], direction=2)
 
+    wm.progress_update(80)
+        
     # Finish up, write the bmesh into a new mesh
     me = bpy.data.meshes.new('Mesh')
     bm.to_mesh(me)
@@ -714,7 +728,7 @@ def generate_spaceship(random_seed=1,
     bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS')
     ob = bpy.context.object
     ob.location = (0, 0, 0)
-
+    
     # Add a fairly broad bevel modifier to angularize shape
     if apply_bevel_modifier:
         bevel_modifier = ob.modifiers.new('Bevel', 'BEVEL')
@@ -724,6 +738,8 @@ def generate_spaceship(random_seed=1,
         bevel_modifier.profile = 0.25
         bevel_modifier.limit_method = 'NONE'
 
+    wm.progress_update(90)
+        
     # Add materials to the spaceship
     me = ob.data
     materials = create_materials()
@@ -732,7 +748,9 @@ def generate_spaceship(random_seed=1,
             me.materials.append(mat)
         else:
             me.materials.append(bpy.data.materials.new(name="Material"))
-    print(len(scene.objects))
+    
+    wm.progress_update(100)
+    wm.progress_end()
     return obj
 
 '''if __name__ == "__main__":
