@@ -29,7 +29,7 @@ class GenerateSpaceship(Operator):
     bl_label = "Spaceship"
     bl_options = {'REGISTER', 'UNDO', 'PRESET'}
 
-    random_seed = IntProperty (default=0, min=0, soft_max=16, name='Seed')
+    random_seed = StringProperty (default='', name='Seed')
     x_segments  = BoolProperty(default=True, name='Create X Segments')
     y_segments  = BoolProperty(default=False, name='Create Y Segments')
     z_segments  = BoolProperty(default=False, name='Create Z Segments')
@@ -43,7 +43,8 @@ class GenerateSpaceship(Operator):
     allow_vertical_symmetry    = BoolProperty(default=False, name='Allow Vertical Symmetry')
     apply_bevel_modifier       = BoolProperty(default=True,  name='Apply Bevel Modifier')
     assign_materials           = BoolProperty(default=True,  name='Assign Materials')
-
+    reset_scene                = BoolProperty(default=False,  name='Reset')
+    
     CreatedObject = None
     count = 0
     
@@ -75,10 +76,48 @@ class GenerateSpaceship(Operator):
         box.prop(self, 'allow_vertical_symmetry')
         box.prop(self, 'apply_bevel_modifier')
         box.prop(self, 'assign_materials')
-        box.operator("spaceship.create", text='Create SpaceShip')
+        box.operator("spaceship.create", text='Create SpaceShip', icon='ACTION')
+        box.prop(self, "reset_scene",text="Reset", icon='FILE_REFRESH')
+    
+    def reset_scene1(self, context):
+        self.random_seed = ''
+        self.x_segments  = True
+        self.y_segments  = False
+        self.z_segments  = False
+        self.num_hull_segments_min      = 3
+        self.num_hull_segments_max      = 6
+        self.create_asymmetry_segments  = True
+        self.num_asymmetry_segments_min = 1
+        self.num_asymmetry_segments_max = 5
+        self.create_face_detail         = True
+        self.allow_horizontal_symmetry  = True
+        self.allow_vertical_symmetry    = False
+        self.apply_bevel_modifier       = True
+        self.assign_materials           = True
+        self.reset_scene                = False
+        
+        self.CreatedObject = spaceship_generator.generate_spaceship(
+                self.random_seed,
+                self.x_segments,
+                self.y_segments,
+                self.z_segments,
+                self.num_hull_segments_min,
+                self.num_hull_segments_max,
+                self.create_asymmetry_segments,
+                self.num_asymmetry_segments_min,
+                self.num_asymmetry_segments_max,
+                self.create_face_detail,
+                self.allow_horizontal_symmetry,
+                self.allow_vertical_symmetry,
+                self.apply_bevel_modifier)
+            
             
     def execute(self, context):
         global StartCreation
+        if self.reset_scene == True:
+            self.reset_scene1(context)
+            return {'FINISHED'}
+            
         if StartCreation:
             self.CreatedObject = spaceship_generator.generate_spaceship(
                 self.random_seed,

@@ -508,7 +508,7 @@ def create_materials():
 # Just uses global cube texture coordinates rather than generating UVs.
 # Takes an optional random seed value to generate a specific spaceship.
 # Allows overriding of some parameters that affect generation.
-def generate_spaceship(random_seed=1,
+def generate_spaceship(random_seed='',
                        x_segments = True,
                        y_segments = False,
                        z_segments = False,
