@@ -8,7 +8,9 @@ Also I had to disable the input controls for now, should be able to get that wor
 
 I will add new features when I get the hang of it.
 
-![Spaceship screenshots](https://raw.githubusercontent.com/a1studmuffin/SpaceshipGenerator/master/screenshots/spaceships_grid.jpg)
+![Spaceship screenshots](./screenshots/1.PNG)
+![Spaceship screenshots](./screenshots/2.PNG)
+![Spaceship screenshots](./screenshots/3.PNG)
 
 ## Usage
 
@@ -16,10 +18,11 @@ I will add new features when I get the hang of it.
 - Download newest **add_mesh_SpaceshipGenerator.zip** from the Releases.
 - Under `Edit > Preferences > Add-ons > Install` From Disk then pick the release zip file.
 - Add a spaceship in the 3D View under `Add > Mesh > Spaceship`
+- The script will delete all objects starting with `Spaceship` before generating a new spaceship.
 
 ## How it works
 
-![Step-by-step animation](https://raw.githubusercontent.com/a1studmuffin/SpaceshipGenerator/master/screenshots/step-by-step-animation.gif)
+![Step-by-step animation](./screenshots/step-by-step-animation.gif)
 
 - Start with a box.
 - Build the hull: Extrude the front/rear faces several times, adding random translation/scaling/rotation along the way.
@@ -29,15 +32,3 @@ I will add new features when I get the hang of it.
 - Add a Bevel modifier to angularize the shape.
 - Apply materials to the final result.
 - Take over the universe with your new infinite fleet of spaceships.
-
-## Extreme examples
-
-The following screenshots were created using extreme values for the number of hull segments and asymmetry segments to show how the algorithm works.
-
-![Extreme spaceship screenshots](https://raw.githubusercontent.com/a1studmuffin/SpaceshipGenerator/master/screenshots/extreme_examples.jpg)
-
-## Tips
-
-- By default the script will delete all objects starting with `Spaceship` before generating a new spaceship. To disable this feature, remove or comment out the call to `reset_scene()` around line 735 in the main function.
-- You can provide a seed to the `generate_spaceship()` function to always generate the same spaceship. For example, `generate_spaceship('michael')`.
-- The `generate_spaceship()` function takes many more parameters that affect the generation process. Try playing with them!
