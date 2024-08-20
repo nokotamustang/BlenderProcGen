@@ -1,8 +1,10 @@
-# Spaceship Generator
+# BlenderProcGen Spaceship Generator in Blender 4.2
 
 A Blender script to procedurally generate 3D spaceships from a random seed. `Nokota Mustang` has forked this, from Michael Davies, to update it to work with Blender 4.2.
 
 It's working but I had to butcher some of the texture on the materials -- will update as soon as I can figure out how to update the code.
+
+Also I had to disable the input controls for now, should be able to get that working soon.
 
 I will add new features when I get the hang of it.
 
@@ -18,8 +20,6 @@ I will add new features when I get the hang of it.
 ## How it works
 
 ![Step-by-step animation](https://raw.githubusercontent.com/a1studmuffin/SpaceshipGenerator/master/screenshots/step-by-step-animation.gif)
-
-Watch on YouTube: <https://www.youtube.com/watch?v=xJZyXqJ6nog>
 
 - Start with a box.
 - Build the hull: Extrude the front/rear faces several times, adding random translation/scaling/rotation along the way.
